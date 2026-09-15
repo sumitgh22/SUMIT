@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hello, World</title>
+<title>Contact Sumit</title>
 <style>
   :root {
     --bg-1: #0f0c29;
@@ -20,19 +20,16 @@
 
   * { box-sizing: border-box; }
 
-  html, body { height: 100%; }
-
   body {
     margin: 0;
-    display: grid;
-    place-items: center;
-    padding: 96px 24px 64px;
+    min-height: 100vh;
+    padding: 100px 24px 48px;
     font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
     color: var(--ink);
     background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), #1b2735);
     background-size: 400% 400%;
     animation: drift 18s ease infinite;
-    overflow: hidden;
+    overflow-x: hidden;
   }
 
   @keyframes drift {
@@ -91,8 +88,9 @@
 
   .card {
     position: relative;
-    width: min(560px, 100%);
-    padding: clamp(32px, 6vw, 56px);
+    width: min(640px, 100%);
+    margin: 0 auto;
+    padding: clamp(28px, 6vw, 56px);
     text-align: center;
     border-radius: 28px;
     background: var(--glass);
@@ -123,7 +121,7 @@
 
   h1 {
     margin: 0;
-    font-size: clamp(42px, 9vw, 76px);
+    font-size: clamp(38px, 8vw, 64px);
     font-weight: 800;
     letter-spacing: -0.03em;
     line-height: 1.05;
@@ -140,17 +138,63 @@
   }
 
   p.lede {
-    margin: 18px auto 30px;
-    max-width: 38ch;
+    margin: 18px auto 32px;
+    max-width: 42ch;
     font-size: clamp(15px, 2.4vw, 17px);
     line-height: 1.65;
     color: var(--muted);
   }
 
+  form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    text-align: left;
+  }
+  .field { display: grid; gap: 7px; }
+  .field.full { grid-column: 1 / -1; }
+  label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  input, textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    padding: 13px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--edge);
+    background: rgba(255, 255, 255, 0.05);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+  textarea { min-height: 140px; resize: vertical; }
+  input::placeholder, textarea::placeholder { color: rgba(244, 244, 248, 0.35); }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent-a);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 4px rgba(127, 90, 240, 0.25);
+  }
+
+  .submit-row {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 6px;
+  }
+
   .btn {
+    display: inline-block;
     font: inherit;
     font-weight: 600;
     color: var(--ink);
+    text-decoration: none;
     padding: 14px 30px;
     border: 1px solid var(--edge);
     border-radius: 999px;
@@ -163,20 +207,39 @@
   .btn:active { transform: translateY(0); }
   .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
-  .greeting {
-    margin-top: 22px;
+  .status {
+    grid-column: 1 / -1;
     min-height: 1.4em;
-    font-size: 15px;
-    letter-spacing: 0.04em;
-    color: var(--muted);
-    transition: opacity 0.25s ease;
+    text-align: center;
+    font-size: 14px;
+    color: var(--accent-b);
   }
 
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 30px;
+    text-align: left;
+  }
+  .tile {
+    display: block;
+    padding: 20px 22px;
+    border-radius: 20px;
+    color: inherit;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--edge);
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .tile:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.09); }
+  .tile:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .tile .icon { font-size: 24px; }
+  .tile h2 { margin: 10px 0 4px; font-size: 16px; }
+  .tile p  { margin: 0; font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
+
   footer {
-    position: fixed;
-    bottom: 18px;
-    left: 0;
-    right: 0;
+    margin-top: 32px;
     text-align: center;
     font-size: 12px;
     letter-spacing: 0.1em;
@@ -194,50 +257,73 @@
   <div class="orb c"></div>
 
   <nav class="site" aria-label="Main">
-    <a href="hello.html" aria-current="page">Home</a>
+    <a href="hello.html">Home</a>
     <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
+    <a href="contact.html" aria-current="page">Contact</a>
   </nav>
 
   <main class="card">
-    <span class="badge">Demo</span>
-    <h1>Hello, World</h1>
-    <p class="lede">A small page with nice manners: animated gradients, frosted glass, and a button that says hi in a different language every time.</p>
-    <button class="btn" id="hi">Say hello</button>
-    <div class="greeting" id="out">&nbsp;</div>
+    <span class="badge">Contact</span>
+    <h1>Get in touch</h1>
+    <p class="lede">Have a question, an idea, or just want to say hi? Drop me a message and I'll get back to you.</p>
+
+    <form id="contact-form">
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" placeholder="Your name" required>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" required>
+      </div>
+      <div class="field full">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="What's on your mind?" required></textarea>
+      </div>
+      <div class="submit-row">
+        <button class="btn" type="submit">Send message</button>
+      </div>
+      <div class="status" id="status" role="status"></div>
+    </form>
+
+    <section class="tiles">
+      <a class="tile" id="email-tile" href="#">
+        <div class="icon">✉️</div>
+        <h2>Email</h2>
+        <p id="email-text"></p>
+      </a>
+      <a class="tile" href="about.html">
+        <div class="icon">👋</div>
+        <h2>More about me</h2>
+        <p>Who I am and what I'm up to.</p>
+      </a>
+    </section>
   </main>
 
   <footer>Built in the Demo folder</footer>
 
 <script>
-  const greetings = [
-    ["Hola",       "Spanish"],
-    ["Bonjour",    "French"],
-    ["नमस्ते",       "Hindi"],
-    ["こんにちは",   "Japanese"],
-    ["Ciao",       "Italian"],
-    ["Hallo",      "German"],
-    ["Olá",        "Portuguese"],
-    ["Привет",     "Russian"],
-    ["مرحبا",       "Arabic"],
-    ["안녕하세요",   "Korean"],
-    ["你好",        "Chinese"]
-  ];
+  // Replace with the address you want messages sent to.
+  const CONTACT_EMAIL = "you@example.com";
 
-  const out = document.getElementById("out");
-  let last = -1;
+  const emailTile = document.getElementById("email-tile");
+  emailTile.href = "mailto:" + CONTACT_EMAIL;
+  document.getElementById("email-text").textContent = CONTACT_EMAIL;
 
-  document.getElementById("hi").addEventListener("click", () => {
-    let i;
-    do { i = Math.floor(Math.random() * greetings.length); } while (i === last && greetings.length > 1);
-    last = i;
+  // No server here, so the form opens the visitor's email app with the message filled in.
+  document.getElementById("contact-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("name").value.trim();
+    const from = document.getElementById("email").value.trim();
+    const message = document.getElementById("message").value.trim();
 
-    const [word, lang] = greetings[i];
-    out.style.opacity = 0;
-    setTimeout(() => {
-      out.textContent = word + "  —  " + lang;
-      out.style.opacity = 1;
-    }, 200);
+    const subject = "Hello from " + name;
+    const body = message + "\n\n— " + name + " (" + from + ")";
+    window.location.href = "mailto:" + CONTACT_EMAIL +
+      "?subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body);
+
+    document.getElementById("status").textContent = "Opening your email app…";
   });
 </script>
 </body>

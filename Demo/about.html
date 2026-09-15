@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hello, World</title>
+<title>About Sumit</title>
 <style>
   :root {
     --bg-1: #0f0c29;
@@ -20,19 +20,16 @@
 
   * { box-sizing: border-box; }
 
-  html, body { height: 100%; }
-
   body {
     margin: 0;
-    display: grid;
-    place-items: center;
-    padding: 96px 24px 64px;
+    min-height: 100vh;
+    padding: 100px 24px 48px;
     font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
     color: var(--ink);
     background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), #1b2735);
     background-size: 400% 400%;
     animation: drift 18s ease infinite;
-    overflow: hidden;
+    overflow-x: hidden;
   }
 
   @keyframes drift {
@@ -91,8 +88,9 @@
 
   .card {
     position: relative;
-    width: min(560px, 100%);
-    padding: clamp(32px, 6vw, 56px);
+    width: min(760px, 100%);
+    margin: 0 auto;
+    padding: clamp(28px, 6vw, 56px);
     text-align: center;
     border-radius: 28px;
     background: var(--glass);
@@ -123,7 +121,7 @@
 
   h1 {
     margin: 0;
-    font-size: clamp(42px, 9vw, 76px);
+    font-size: clamp(38px, 8vw, 64px);
     font-weight: 800;
     letter-spacing: -0.03em;
     line-height: 1.05;
@@ -140,17 +138,62 @@
   }
 
   p.lede {
-    margin: 18px auto 30px;
-    max-width: 38ch;
+    margin: 18px auto 0;
+    max-width: 48ch;
     font-size: clamp(15px, 2.4vw, 17px);
     line-height: 1.65;
     color: var(--muted);
   }
 
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 36px;
+    text-align: left;
+  }
+  .tile {
+    padding: 22px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--edge);
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .tile:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.09); }
+  .tile .icon { font-size: 26px; }
+  .tile h2 { margin: 12px 0 6px; font-size: 17px; }
+  .tile p  { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--muted); }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 30px;
+  }
+  .chip {
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 999px;
+    border: 1px solid var(--edge);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 34px;
+  }
+
   .btn {
+    display: inline-block;
     font: inherit;
     font-weight: 600;
     color: var(--ink);
+    text-decoration: none;
     padding: 14px 30px;
     border: 1px solid var(--edge);
     border-radius: 999px;
@@ -162,21 +205,10 @@
   .btn:hover  { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(127, 90, 240, 0.52); filter: brightness(1.07); }
   .btn:active { transform: translateY(0); }
   .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-
-  .greeting {
-    margin-top: 22px;
-    min-height: 1.4em;
-    font-size: 15px;
-    letter-spacing: 0.04em;
-    color: var(--muted);
-    transition: opacity 0.25s ease;
-  }
+  .btn.ghost { background: rgba(255, 255, 255, 0.05); box-shadow: none; }
 
   footer {
-    position: fixed;
-    bottom: 18px;
-    left: 0;
-    right: 0;
+    margin-top: 32px;
     text-align: center;
     font-size: 12px;
     letter-spacing: 0.1em;
@@ -194,51 +226,48 @@
   <div class="orb c"></div>
 
   <nav class="site" aria-label="Main">
-    <a href="hello.html" aria-current="page">Home</a>
-    <a href="about.html">About</a>
+    <a href="hello.html">Home</a>
+    <a href="about.html" aria-current="page">About</a>
     <a href="contact.html">Contact</a>
   </nav>
 
   <main class="card">
-    <span class="badge">Demo</span>
-    <h1>Hello, World</h1>
-    <p class="lede">A small page with nice manners: animated gradients, frosted glass, and a button that says hi in a different language every time.</p>
-    <button class="btn" id="hi">Say hello</button>
-    <div class="greeting" id="out">&nbsp;</div>
+    <span class="badge">About</span>
+    <h1>Hi, I'm Sumit</h1>
+    <p class="lede">I like building things and learning by doing. This little site is my playground for experimenting with HTML, CSS, and a bit of JavaScript.</p>
+
+    <section class="tiles">
+      <div class="tile">
+        <div class="icon">🚀</div>
+        <h2>What I'm doing</h2>
+        <p>Learning to build websites with Claude Code, one page at a time.</p>
+      </div>
+      <div class="tile">
+        <div class="icon">🎯</div>
+        <h2>What I care about</h2>
+        <p>Clean design, simple code, and things that feel good to use.</p>
+      </div>
+      <div class="tile">
+        <div class="icon">🌱</div>
+        <h2>Next up</h2>
+        <p>More pages, new layouts, and putting my projects online.</p>
+      </div>
+    </section>
+
+    <div class="chips">
+      <span class="chip">HTML</span>
+      <span class="chip">CSS</span>
+      <span class="chip">JavaScript</span>
+      <span class="chip">Git</span>
+      <span class="chip">Claude Code</span>
+    </div>
+
+    <div class="actions">
+      <a class="btn" href="contact.html">Get in touch</a>
+      <a class="btn ghost" href="hello.html">Back home</a>
+    </div>
   </main>
 
   <footer>Built in the Demo folder</footer>
-
-<script>
-  const greetings = [
-    ["Hola",       "Spanish"],
-    ["Bonjour",    "French"],
-    ["नमस्ते",       "Hindi"],
-    ["こんにちは",   "Japanese"],
-    ["Ciao",       "Italian"],
-    ["Hallo",      "German"],
-    ["Olá",        "Portuguese"],
-    ["Привет",     "Russian"],
-    ["مرحبا",       "Arabic"],
-    ["안녕하세요",   "Korean"],
-    ["你好",        "Chinese"]
-  ];
-
-  const out = document.getElementById("out");
-  let last = -1;
-
-  document.getElementById("hi").addEventListener("click", () => {
-    let i;
-    do { i = Math.floor(Math.random() * greetings.length); } while (i === last && greetings.length > 1);
-    last = i;
-
-    const [word, lang] = greetings[i];
-    out.style.opacity = 0;
-    setTimeout(() => {
-      out.textContent = word + "  —  " + lang;
-      out.style.opacity = 1;
-    }, 200);
-  });
-</script>
 </body>
 </html>
