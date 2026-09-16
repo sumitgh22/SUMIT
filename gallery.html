@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gallery</title>
+<style>
+  :root {
+    --bg-1: #0f0c29;
+    --bg-2: #302b63;
+    --bg-3: #24243e;
+    --ink: #f4f4f8;
+    --muted: rgba(244, 244, 248, 0.62);
+    --glass: rgba(255, 255, 255, 0.07);
+    --edge: rgba(255, 255, 255, 0.16);
+    --accent-a: #7f5af0;
+    --accent-b: #2cb67d;
+    --accent-c: #ff8906;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 100px 24px 48px;
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), #1b2735);
+    background-size: 400% 400%;
+    animation: drift 18s ease infinite;
+    overflow-x: hidden;
+  }
+
+  @keyframes drift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* soft colored glows behind the card */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.45;
+    pointer-events: none;
+    animation: float 14s ease-in-out infinite;
+  }
+  .orb.a { width: 340px; height: 340px; background: var(--accent-a); top: 8%;  left: 10%; }
+  .orb.b { width: 300px; height: 300px; background: var(--accent-b); bottom: 6%; right: 12%; animation-delay: -5s; }
+  .orb.c { width: 220px; height: 220px; background: var(--accent-c); top: 55%;  left: 55%; animation-delay: -9s; opacity: 0.3; }
+
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50%      { transform: translate3d(30px, -40px, 0) scale(1.12); }
+  }
+
+  /* site navigation */
+  nav.site {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--edge);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+  nav.site a {
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    border-radius: 999px;
+    transition: color 0.18s ease, background 0.18s ease;
+  }
+  nav.site a:hover { color: var(--ink); background: rgba(255, 255, 255, 0.08); }
+  nav.site a[aria-current="page"] { color: var(--ink); background: linear-gradient(135deg, var(--accent-a), var(--accent-b)); }
+  nav.site a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .card {
+    position: relative;
+    width: min(1060px, 100%);
+    margin: 0 auto;
+    padding: clamp(28px, 5vw, 52px);
+    text-align: center;
+    border-radius: 28px;
+    background: var(--glass);
+    border: 1px solid var(--edge);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(26px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .badge {
+    display: inline-block;
+    margin-bottom: 22px;
+    padding: 7px 16px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--edge);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(38px, 8vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    background: linear-gradient(100deg, #ffffff 0%, var(--accent-a) 35%, var(--accent-c) 60%, #ffffff 100%);
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 6s linear infinite;
+  }
+
+  @keyframes shimmer {
+    to { background-position: 220% center; }
+  }
+
+  p.lede {
+    margin: 18px auto 0;
+    max-width: 48ch;
+    font-size: clamp(15px, 2.4vw, 17px);
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  /* category filters */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 30px;
+  }
+  .filter {
+    font: inherit;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 999px;
+    border: 1px solid var(--edge);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.18s ease, background 0.18s ease;
+  }
+  .filter:hover { color: var(--ink); background: rgba(255, 255, 255, 0.1); }
+  .filter[aria-pressed="true"] {
+    color: var(--ink);
+    background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+    border-color: transparent;
+  }
+  .filter:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  /* the grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 18px;
+    margin-top: 32px;
+    text-align: left;
+  }
+
+  .piece {
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid var(--edge);
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+    animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .piece:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  }
+  .piece:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .piece[hidden] { display: none; }
+
+  .art {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .piece:hover .art { transform: scale(1.06); }
+
+  .meta { display: block; padding: 14px 16px 16px; }
+  .meta .t { display: block; margin: 0 0 4px; font-size: 15.5px; font-weight: 700; }
+  .meta .d { display: block; font-size: 13px; line-height: 1.55; color: var(--muted); }
+
+  /* the nine artworks, drawn entirely with gradients */
+  .art-aurora {
+    background:
+      radial-gradient(circle at 20% 20%, rgba(44, 182, 125, 0.9), transparent 55%),
+      radial-gradient(circle at 80% 30%, rgba(127, 90, 240, 0.9), transparent 55%),
+      conic-gradient(from 210deg at 50% 120%, #ff8906, #7f5af0, #2cb67d, #ff8906);
+  }
+  .art-nebula {
+    background:
+      radial-gradient(circle at 35% 40%, rgba(255, 137, 6, 0.85), transparent 45%),
+      radial-gradient(circle at 70% 65%, rgba(127, 90, 240, 0.95), transparent 50%),
+      radial-gradient(circle at 50% 50%, #24243e, #0f0c29);
+  }
+  .art-prism {
+    background: repeating-linear-gradient(115deg,
+      #7f5af0 0 14px, #2cb67d 14px 28px, #ff8906 28px 42px, #24243e 42px 56px);
+  }
+  .art-orbit {
+    background:
+      repeating-radial-gradient(circle at 50% 50%,
+        rgba(255, 255, 255, 0.16) 0 2px, transparent 2px 22px),
+      linear-gradient(140deg, #302b63, #7f5af0 60%, #ff8906);
+  }
+  .art-mesh {
+    background:
+      radial-gradient(circle at 10% 20%, #7f5af0, transparent 45%),
+      radial-gradient(circle at 90% 15%, #2cb67d, transparent 45%),
+      radial-gradient(circle at 25% 90%, #ff8906, transparent 45%),
+      radial-gradient(circle at 85% 85%, #2cb67d, transparent 45%),
+      #1b2735;
+  }
+  .art-grid {
+    background:
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px 26px),
+      linear-gradient(160deg, #0f0c29, #7f5af0);
+  }
+  .art-sunburst {
+    background:
+      conic-gradient(from 0deg at 50% 55%,
+        #ff8906 0 8deg, transparent 8deg 30deg,
+        #7f5af0 30deg 38deg, transparent 38deg 60deg,
+        #2cb67d 60deg 68deg, transparent 68deg 90deg,
+        #ff8906 90deg 98deg, transparent 98deg 120deg,
+        #7f5af0 120deg 128deg, transparent 128deg 150deg,
+        #2cb67d 150deg 158deg, transparent 158deg 180deg,
+        #ff8906 180deg 188deg, transparent 188deg 210deg,
+        #7f5af0 210deg 218deg, transparent 218deg 240deg,
+        #2cb67d 240deg 248deg, transparent 248deg 270deg,
+        #ff8906 270deg 278deg, transparent 278deg 300deg,
+        #7f5af0 300deg 308deg, transparent 308deg 330deg,
+        #2cb67d 330deg 338deg, transparent 338deg 360deg),
+      radial-gradient(circle at 50% 55%, #ffffff 0 6%, #24243e 40%);
+  }
+  .art-ripple {
+    background:
+      repeating-radial-gradient(circle at 30% 70%,
+        #2cb67d 0 6px, #24243e 6px 14px, #7f5af0 14px 20px, #24243e 20px 28px);
+  }
+  .art-dusk {
+    background:
+      linear-gradient(180deg,
+        #0f0c29 0%, #302b63 35%, #7f5af0 62%, #ff8906 86%, #ffd6a0 100%);
+  }
+
+  .empty {
+    margin-top: 32px;
+    padding: 40px 20px;
+    border-radius: 20px;
+    border: 1px dashed var(--edge);
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+  .empty[hidden] { display: none; }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 36px;
+  }
+
+  .btn {
+    display: inline-block;
+    font: inherit;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 14px 30px;
+    border: 1px solid var(--edge);
+    border-radius: 999px;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+    box-shadow: 0 10px 26px rgba(127, 90, 240, 0.4);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  }
+  .btn:hover  { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(127, 90, 240, 0.52); filter: brightness(1.07); }
+  .btn:active { transform: translateY(0); }
+  .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .btn.ghost { background: rgba(255, 255, 255, 0.05); box-shadow: none; }
+
+  /* lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(8, 6, 20, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fade 0.25s ease both;
+  }
+  .lightbox[hidden] { display: none; }
+
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  .lightbox .frame {
+    position: relative;
+    width: min(680px, 100%);
+    border-radius: 24px;
+    overflow: hidden;
+    background: rgba(36, 36, 62, 0.9);
+    border: 1px solid var(--edge);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    animation: rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .lightbox .art { aspect-ratio: 16 / 10; }
+  .lightbox .frame .meta { padding: 18px 22px 22px; text-align: left; }
+  .lightbox .frame .meta h2 { font-size: 20px; margin: 0; }
+  .lightbox .frame .meta p  { margin: 6px 0 0; font-size: 14px; line-height: 1.55; color: var(--muted); }
+
+  .lb-close, .lb-nav {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--ink);
+    border-radius: 50%;
+    border: 1px solid var(--edge);
+    background: rgba(15, 12, 41, 0.6);
+    cursor: pointer;
+    transition: background 0.18s ease;
+  }
+  .lb-close { top: 14px; right: 14px; }
+  .lb-nav.prev { left: 14px; top: 34%; transform: translateY(-50%); }
+  .lb-nav.next { right: 14px; top: 34%; transform: translateY(-50%); }
+  .lb-close:hover, .lb-nav:hover { background: rgba(255, 255, 255, 0.18); }
+  .lb-close:focus-visible, .lb-nav:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .lb-nav[hidden] { display: none; }
+
+  .counter {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: rgba(244, 244, 248, 0.35);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body, .orb, h1, .card, .piece, .lightbox, .lightbox .frame { animation: none; }
+    .piece:hover .art { transform: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+
+  <nav class="site" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="gallery.html" aria-current="page">Gallery</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main class="card">
+    <span class="badge">Gallery</span>
+    <h1>Made with CSS</h1>
+    <p class="lede">Nine pieces, and not one image file among them. Every tile below is drawn by the browser using gradients alone. Pick a category, then click any piece to see it larger.</p>
+
+    <div class="filters" role="group" aria-label="Filter by category">
+      <button class="filter" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter" data-filter="light" aria-pressed="false">Light</button>
+      <button class="filter" data-filter="geometry" aria-pressed="false">Geometry</button>
+      <button class="filter" data-filter="gradients" aria-pressed="false">Gradients</button>
+    </div>
+
+    <div class="grid" id="grid">
+      <button class="piece" data-category="light" data-art="art-aurora">
+        <span class="art art-aurora"></span>
+        <span class="meta">
+          <span class="t">Aurora</span>
+          <span class="d">A conic sweep behind two soft radial glows.</span>
+        </span>
+      </button>
+
+      <button class="piece" data-category="light" data-art="art-nebula">
+        <span class="art art-nebula"></span>
+        <span class="meta">
+          <span class="t">Nebula</span>
+          <span class="d">Layered radials fading out into deep space.</span>
+        </span>
+      </button>
+
+      <button class="piece" data-category="geometry" data-art="art-prism">
+        <span class="art art-prism"></span>
+        <span class="meta">
+          <span class="t">Prism</span>
+          <span class="d">Repeating diagonal bands in four colours.</span>
+        </span>
+      </button>
+
+      <button class="piece" data-category="geometry" data-art="art-orbit">
+        <span class="art art-orbit"></span>
+        <span class="meta">
+          <span class="t">Orbit</span>
+          <span class="d">Concentric rings over a warm diagonal blend.</span>
+        </span>
+      </button>
+
+      <button class="piece" data-category="gradients" data-art="art-mesh">
+        <span class="art art-mesh"></span>
+        <span class="meta">
+          <span class="t">Mesh</span>
+          <span class="d">Four corner glows meeting in the middle.</span>
+        </span>
+      </button>
+
+      <button class="piece" data-category="geometry" data-art="art-grid">
+        <span class="art art-grid"></span>
+        <span class="meta">
+          <span class="t">Grid</span>
+          <span class="d">Hairlines crossing a violet gradient field.</span>
+        </span>
+      </button>
+
+      <button class="piece" data-category="light" data-art="art-sunburst">
+        <span class="art art-sunburst"></span>
+        <span class="meta">
+          <span class="t">Sunburst</span>
+          <span class="d">Twenty-four rays thrown from a white core.</span>
+        </span>
+      </button>
+
+      <button class="piece" data-category="geometry" data-art="art-ripple">
+        <span class="art art-ripple"></span>
+        <span class="meta">
+          <span class="t">Ripple</span>
+          <span class="d">Rings spreading out from the lower left.</span>
+        </span>
+      </button>
+
+      <button class="piece" data-category="gradients" data-art="art-dusk">
+        <span class="art art-dusk"></span>
+        <span class="meta">
+          <span class="t">Dusk</span>
+          <span class="d">A five-stop sky, midnight through to amber.</span>
+        </span>
+      </button>
+    </div>
+
+    <p class="empty" id="empty" hidden>Nothing in that category yet.</p>
+
+    <div class="actions">
+      <a class="btn" href="contact.html">Get in touch</a>
+      <a class="btn ghost" href="index.html">Back home</a>
+    </div>
+  </main>
+
+  <footer>Built with Claude Code</footer>
+
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-labelledby="lb-title">
+    <div class="frame">
+      <span class="art" id="lb-art"></span>
+      <div class="meta">
+        <h2 id="lb-title"></h2>
+        <p id="lb-caption"></p>
+      </div>
+      <button class="lb-close" id="lb-close" aria-label="Close">&times;</button>
+      <button class="lb-nav prev" id="lb-prev" aria-label="Previous piece">&#8249;</button>
+      <button class="lb-nav next" id="lb-next" aria-label="Next piece">&#8250;</button>
+      <span class="counter" id="lb-counter"></span>
+    </div>
+  </div>
+
+<script>
+  const pieces   = Array.from(document.querySelectorAll(".piece"));
+  const filters  = Array.from(document.querySelectorAll(".filter"));
+  const empty    = document.getElementById("empty");
+  const lightbox = document.getElementById("lightbox");
+  const lbArt    = document.getElementById("lb-art");
+  const lbTitle  = document.getElementById("lb-title");
+  const lbCap    = document.getElementById("lb-caption");
+  const lbCount  = document.getElementById("lb-counter");
+  const lbClose  = document.getElementById("lb-close");
+  const lbPrev   = document.getElementById("lb-prev");
+  const lbNext   = document.getElementById("lb-next");
+
+  /* ---- filtering ---- */
+  function applyFilter(name) {
+    let shown = 0;
+    pieces.forEach(p => {
+      const match = name === "all" || p.dataset.category === name;
+      p.hidden = !match;
+      if (match) shown++;
+    });
+    empty.hidden = shown > 0;
+    filters.forEach(f => f.setAttribute("aria-pressed", String(f.dataset.filter === name)));
+  }
+
+  filters.forEach(f => f.addEventListener("click", () => applyFilter(f.dataset.filter)));
+
+  /* ---- lightbox ---- */
+  let current = -1;
+  let opener  = null;
+
+  // only step through the pieces the active filter is showing
+  const visible = () => pieces.filter(p => !p.hidden);
+
+  function show(piece) {
+    const list = visible();
+    current = list.indexOf(piece);
+
+    lbArt.className = "art " + piece.dataset.art;
+    lbTitle.textContent = piece.querySelector(".t").textContent;
+    lbCap.textContent   = piece.querySelector(".d").textContent;
+    lbCount.textContent = (current + 1) + " / " + list.length;
+
+    const solo = list.length < 2;
+    lbPrev.hidden = solo;
+    lbNext.hidden = solo;
+  }
+
+  function open(piece) {
+    opener = piece;
+    show(piece);
+    lightbox.hidden = false;
+    document.body.style.overflow = "hidden";
+    lbClose.focus();
+  }
+
+  function close() {
+    lightbox.hidden = true;
+    document.body.style.overflow = "";
+    if (opener) opener.focus();
+  }
+
+  function step(delta) {
+    const list = visible();
+    if (!list.length) return;
+    current = (current + delta + list.length) % list.length;
+    show(list[current]);
+  }
+
+  pieces.forEach(p => p.addEventListener("click", () => open(p)));
+
+  lbClose.addEventListener("click", close);
+  lbPrev.addEventListener("click", () => step(-1));
+  lbNext.addEventListener("click", () => step(1));
+
+  // click the backdrop, but not the frame, to dismiss
+  lightbox.addEventListener("click", e => { if (e.target === lightbox) close(); });
+
+  document.addEventListener("keydown", e => {
+    if (lightbox.hidden) return;
+    if (e.key === "Escape")     close();
+    if (e.key === "ArrowLeft")  step(-1);
+    if (e.key === "ArrowRight") step(1);
+  });
+</script>
+</body>
+</html>
